@@ -70,9 +70,6 @@ function buildNavigation() {
         <h1>${appData.siteTitle}</h1>
         <ul>
             <li><a href="#top" data-section="top">トップ</a></li>
-            <li><a href="#overview" data-section="overview">${appData.sections.overview.title}</a></li>
-            <li><a href="#preparation" data-section="preparation">${appData.sections.preparation.title}</a></li>
-            <li><a href="#collectionManagement" data-section="collectionManagement">${appData.sections.collectionManagement.title}</a></li>
             <li style="margin-top: 10px; padding-top: 10px; border-top: 1px solid #34495e;"><strong style="color: #95a5a6; font-size: 12px;">時系列で見る</strong></li>
             <li><a href="#timeline1Month" data-section="timeline1Month">${appData.sections.timeline1Month.title}</a></li>
             <li><a href="#timeline3Weeks" data-section="timeline3Weeks">${appData.sections.timeline3Weeks.title}</a></li>
@@ -128,15 +125,6 @@ function navigateToSection(section) {
     switch (section) {
         case 'top':
             showTopPage();
-            break;
-        case 'overview':
-            showOverview();
-            break;
-        case 'preparation':
-            showPreparation();
-            break;
-        case 'collectionManagement':
-            showCollectionManagement();
             break;
         case 'timeline1Month':
             showTimeline1Month();
@@ -222,58 +210,6 @@ function showMindmap() {
     `;
 }
 
-// 業務概要を表示
-function showOverview() {
-    const mainContent = document.getElementById('main-content');
-    if (!mainContent) return;
-    
-    const section = appData.sections.overview;
-    let contentHTML = `
-        <div class="content-page">
-            <h1>${section.title}</h1>
-            <p class="description">${section.description}</p>
-    `;
-    
-    section.content.forEach(item => {
-        switch (item.type) {
-            case 'heading':
-                contentHTML += `<h2>${item.text}</h2>`;
-                break;
-            case 'paragraph':
-                contentHTML += `<p>${item.text}</p>`;
-                break;
-            case 'list':
-                contentHTML += `<ul>${item.items.map(i => `<li>${i}</li>`).join('')}</ul>`;
-                break;
-            case 'table':
-                contentHTML += `
-                    <table>
-                        <thead>
-                            <tr>${item.headers.map(h => `<th>${h}</th>`).join('')}</tr>
-                        </thead>
-                        <tbody>
-                            ${item.rows.map(row => `<tr>${row.map(cell => `<td>${cell}</td>`).join('')}</tr>`).join('')}
-                        </tbody>
-                    </table>
-                `;
-                break;
-        }
-    });
-    
-    contentHTML += '</div>';
-    mainContent.innerHTML = contentHTML;
-}
-
-// 準備業務を表示
-function showPreparation() {
-    showTasks('preparation', appData.sections.preparation);
-}
-
-// 集金管理を表示
-function showCollectionManagement() {
-    showChecklistTasks('collectionManagement', appData.sections.collectionManagement);
-}
-
 // 時系列セクション表示関数
 function showTimeline1Month() {
     showChecklistTasks('timeline1Month', appData.sections.timeline1Month);
@@ -312,13 +248,11 @@ function showChecklistTasks(sectionKey, section) {
             </li>`
         ).join('');
         
-        const priorityClass = task.priority === '高' ? 'high' : task.priority === '中' ? 'medium' : 'low';
-        const priorityHTML = task.priority ? `<span class="priority-badge ${priorityClass}">${task.priority}</span>` : '';
         const deadlineHTML = task.deadline ? `<span class="task-meta-item"><strong>期限:</strong> ${task.deadline}</span>` : '';
         const contactHTML = task.contact && task.contact !== '-' ? `<span class="task-meta-item"><strong>連絡先:</strong> ${task.contact}</span>` : '';
         
-        const metaHTML = (deadlineHTML || contactHTML || priorityHTML) ? 
-            `<div class="task-meta">${deadlineHTML}${contactHTML}${priorityHTML}</div>` : '';
+        const metaHTML = (deadlineHTML || contactHTML) ? 
+            `<div class="task-meta">${deadlineHTML}${contactHTML}</div>` : '';
         
         const notesHTML = task.notes ? 
             `<div class="task-notes">${task.notes}</div>` : '';
@@ -345,7 +279,6 @@ function showChecklistTasks(sectionKey, section) {
             <div class="checklist-task">
                 <div class="checklist-task-header">
                     <h3>${task.title}</h3>
-                    ${priorityHTML}
                 </div>
                 ${metaHTML}
                 <ol class="checklist-steps">
