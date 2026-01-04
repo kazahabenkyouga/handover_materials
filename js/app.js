@@ -72,9 +72,15 @@ function buildNavigation() {
             <li><a href="#top" data-section="top">トップ</a></li>
             <li><a href="#overview" data-section="overview">${appData.sections.overview.title}</a></li>
             <li><a href="#preparation" data-section="preparation">${appData.sections.preparation.title}</a></li>
-            <li><a href="#dayOfEvent" data-section="dayOfEvent">${appData.sections.dayOfEvent.title}</a></li>
-            <li><a href="#afterEvent" data-section="afterEvent">${appData.sections.afterEvent.title}</a></li>
-            <li><a href="#troubleshooting" data-section="troubleshooting">${appData.sections.troubleshooting.title}</a></li>
+            <li><a href="#collectionManagement" data-section="collectionManagement">${appData.sections.collectionManagement.title}</a></li>
+            <li style="margin-top: 10px; padding-top: 10px; border-top: 1px solid #34495e;"><strong style="color: #95a5a6; font-size: 12px;">時系列で見る</strong></li>
+            <li><a href="#timeline1Month" data-section="timeline1Month">${appData.sections.timeline1Month.title}</a></li>
+            <li><a href="#timeline3Weeks" data-section="timeline3Weeks">${appData.sections.timeline3Weeks.title}</a></li>
+            <li><a href="#timeline2Weeks" data-section="timeline2Weeks">${appData.sections.timeline2Weeks.title}</a></li>
+            <li><a href="#timelineWeek" data-section="timelineWeek">${appData.sections.timelineWeek.title}</a></li>
+            <li><a href="#timelineDay" data-section="timelineDay">${appData.sections.timelineDay.title}</a></li>
+            <li><a href="#timelineAfter" data-section="timelineAfter">${appData.sections.timelineAfter.title}</a></li>
+            <li style="margin-top: 10px; padding-top: 10px; border-top: 1px solid #34495e;"></li>
             <li><a href="#faq" data-section="faq">${appData.sections.faq.title}</a></li>
             <li><a href="#resources" data-section="resources">${appData.sections.resources.title}</a></li>
         </ul>
@@ -129,14 +135,26 @@ function navigateToSection(section) {
         case 'preparation':
             showPreparation();
             break;
-        case 'dayOfEvent':
-            showDayOfEvent();
+        case 'collectionManagement':
+            showCollectionManagement();
             break;
-        case 'afterEvent':
-            showAfterEvent();
+        case 'timeline1Month':
+            showTimeline1Month();
             break;
-        case 'troubleshooting':
-            showTroubleshooting();
+        case 'timeline3Weeks':
+            showTimeline3Weeks();
+            break;
+        case 'timeline2Weeks':
+            showTimeline2Weeks();
+            break;
+        case 'timelineWeek':
+            showTimelineWeek();
+            break;
+        case 'timelineDay':
+            showTimelineDay();
+            break;
+        case 'timelineAfter':
+            showTimelineAfter();
             break;
         case 'faq':
             showFAQ();
@@ -154,39 +172,22 @@ function showTopPage() {
     const mainContent = document.getElementById('main-content');
     if (!mainContent) return;
     
-    // マインドマップを表示
-    const mindmapHTML = showMindmap();
-    
-    const sections = appData.sections;
-    const cardsHTML = Object.keys(sections).map(key => {
-        const section = sections[key];
-        return `
-            <a href="#${key}" class="section-card" data-section="${key}">
-                <h2>${section.title}</h2>
-                <p>${section.description}</p>
-            </a>
-        `;
-    }).join('');
+    // タイムラインを表示
+    const timelineHTML = showTimeline();
     
     mainContent.innerHTML = `
         <div class="top-page">
             <h1>${appData.siteTitle}</h1>
             <p class="description">${appData.siteDescription}</p>
-            <div class="mindmap-container">
-                ${mindmapHTML}
-            </div>
-            <h2 style="margin-top: 40px; margin-bottom: 20px;">詳細セクション</h2>
-            <div class="section-cards">
-                ${cardsHTML}
-            </div>
+            ${timelineHTML}
         </div>
     `;
     
-    // カードクリックイベント
-    mainContent.querySelectorAll('.section-card').forEach(card => {
-        card.addEventListener('click', (e) => {
+    // タイムラインリンククリックイベント
+    mainContent.querySelectorAll('.timeline-link').forEach(link => {
+        link.addEventListener('click', (e) => {
             e.preventDefault();
-            const section = card.getAttribute('data-section');
+            const section = link.getAttribute('data-section');
             navigateToSection(section);
         });
     });
@@ -268,14 +269,101 @@ function showPreparation() {
     showTasks('preparation', appData.sections.preparation);
 }
 
-// 当日運営を表示
-function showDayOfEvent() {
-    showTasks('dayOfEvent', appData.sections.dayOfEvent);
+// 集金管理を表示
+function showCollectionManagement() {
+    showChecklistTasks('collectionManagement', appData.sections.collectionManagement);
 }
 
-// 事後対応を表示
-function showAfterEvent() {
-    showTasks('afterEvent', appData.sections.afterEvent);
+// 時系列セクション表示関数
+function showTimeline1Month() {
+    showChecklistTasks('timeline1Month', appData.sections.timeline1Month);
+}
+
+function showTimeline3Weeks() {
+    showChecklistTasks('timeline3Weeks', appData.sections.timeline3Weeks);
+}
+
+function showTimeline2Weeks() {
+    showChecklistTasks('timeline2Weeks', appData.sections.timeline2Weeks);
+}
+
+function showTimelineWeek() {
+    showChecklistTasks('timelineWeek', appData.sections.timelineWeek);
+}
+
+function showTimelineDay() {
+    showChecklistTasks('timelineDay', appData.sections.timelineDay);
+}
+
+function showTimelineAfter() {
+    showChecklistTasks('timelineAfter', appData.sections.timelineAfter);
+}
+
+// チェックリスト形式でタスクを表示
+function showChecklistTasks(sectionKey, section) {
+    const mainContent = document.getElementById('main-content');
+    if (!mainContent) return;
+    
+    const tasksHTML = section.tasks.map((task, taskIndex) => {
+        const stepsHTML = task.steps.map((step, stepIndex) => 
+            `<li>
+                <input type="checkbox" id="task-${sectionKey}-${taskIndex}-step-${stepIndex}" />
+                <label for="task-${sectionKey}-${taskIndex}-step-${stepIndex}">${step}</label>
+            </li>`
+        ).join('');
+        
+        const priorityClass = task.priority === '高' ? 'high' : task.priority === '中' ? 'medium' : 'low';
+        const priorityHTML = task.priority ? `<span class="priority-badge ${priorityClass}">${task.priority}</span>` : '';
+        const deadlineHTML = task.deadline ? `<span class="task-meta-item"><strong>期限:</strong> ${task.deadline}</span>` : '';
+        const contactHTML = task.contact && task.contact !== '-' ? `<span class="task-meta-item"><strong>連絡先:</strong> ${task.contact}</span>` : '';
+        
+        const metaHTML = (deadlineHTML || contactHTML || priorityHTML) ? 
+            `<div class="task-meta">${deadlineHTML}${contactHTML}${priorityHTML}</div>` : '';
+        
+        const notesHTML = task.notes ? 
+            `<div class="task-notes">${task.notes}</div>` : '';
+        
+        const referencesHTML = task.references && task.references.length > 0 ? 
+            `<div class="task-references">
+                <h4 class="references-title">参考資料</h4>
+                <ul class="references-list">
+                    ${task.references.map(ref => {
+                        const typeClass = ref.type ? ref.type.toLowerCase() : 'file';
+                        return `
+                            <li class="reference-item">
+                                <a href="${ref.url}" target="_blank" rel="noopener noreferrer" class="reference-link">
+                                    <span class="reference-type ${typeClass}">${ref.type || 'ファイル'}</span>
+                                    <span class="reference-name">${ref.name}</span>
+                                </a>
+                            </li>
+                        `;
+                    }).join('')}
+                </ul>
+            </div>` : '';
+        
+        return `
+            <div class="checklist-task">
+                <div class="checklist-task-header">
+                    <h3>${task.title}</h3>
+                    ${priorityHTML}
+                </div>
+                ${metaHTML}
+                <ol class="checklist-steps">
+                    ${stepsHTML}
+                </ol>
+                ${notesHTML}
+                ${referencesHTML}
+            </div>
+        `;
+    }).join('');
+    
+    mainContent.innerHTML = `
+        <div class="content-page">
+            <h1>${section.title}</h1>
+            <p class="description">${section.description}</p>
+            ${tasksHTML}
+        </div>
+    `;
 }
 
 // タスクを表示（共通処理）
@@ -311,34 +399,42 @@ function showTasks(sectionKey, section) {
     `;
 }
 
-// トラブル対応を表示
-function showTroubleshooting() {
-    const mainContent = document.getElementById('main-content');
-    if (!mainContent) return;
+// タイムラインを表示（トップページ用）
+function showTimeline() {
+    const timelineItems = [
+        { period: '1ヶ月前', section: 'timeline1Month', title: appData.sections.timeline1Month.title },
+        { period: '3週間前', section: 'timeline3Weeks', title: appData.sections.timeline3Weeks.title },
+        { period: '2週間前', section: 'timeline2Weeks', title: appData.sections.timeline2Weeks.title },
+        { period: '開催週', section: 'timelineWeek', title: appData.sections.timelineWeek.title },
+        { period: '当日', section: 'timelineDay', title: appData.sections.timelineDay.title },
+        { period: '終了後', section: 'timelineAfter', title: appData.sections.timelineAfter.title }
+    ];
     
-    const section = appData.sections.troubleshooting;
-    const incidentsHTML = section.incidents.map(incident => {
-        const stepsHTML = incident.steps.map(step => `<li>${step}</li>`).join('');
-        const severityClass = incident.severity === '高' ? 'high' : 'medium';
-        const severityText = incident.severity === '高' ? '高' : '中';
+    const timelineHTML = timelineItems.map((item, index) => {
+        const section = appData.sections[item.section];
+        const tasksList = section.tasks.map(task => `<li>${task.title}</li>`).join('');
         
         return `
-            <div class="incident-item severity-${severityClass}">
-                <h3>${incident.title}</h3>
-                <span class="severity-badge ${severityClass}">重要度: ${severityText}</span>
-                <ol class="steps-list">
-                    ${stepsHTML}
-                </ol>
-                ${incident.contact ? `<div class="incident-contact">連絡先: ${incident.contact}</div>` : ''}
+        <div class="timeline-item">
+            <div class="timeline-marker"></div>
+            <div class="timeline-content">
+                <div class="timeline-period">${item.period}</div>
+                <a href="#${item.section}" class="timeline-link" data-section="${item.section}">${item.title}</a>
+                <ul class="timeline-tasks">
+                    ${tasksList}
+                </ul>
             </div>
-        `;
+            ${index < timelineItems.length - 1 ? '<div class="timeline-connector"></div>' : ''}
+        </div>
+    `;
     }).join('');
     
-    mainContent.innerHTML = `
-        <div class="content-page">
-            <h1>${section.title}</h1>
-            <p class="description">${section.description}</p>
-            ${incidentsHTML}
+    return `
+        <div class="timeline-container">
+            <h2 style="margin-bottom: 30px;">時系列スケジュール</h2>
+            <div class="timeline">
+                ${timelineHTML}
+            </div>
         </div>
     `;
 }

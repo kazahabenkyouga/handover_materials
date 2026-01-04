@@ -567,5 +567,312 @@ body {
         font-size: 22px;
         padding: 15px 30px;
     }
+    
+    .timeline {
+        padding-left: 20px;
+    }
+    
+    .timeline-marker {
+        left: -28px;
+    }
+    
+    .timeline-connector {
+        left: -21px;
+    }
+    
+    .task-meta {
+        flex-direction: column;
+        gap: 8px;
+    }
+}
+
+/* チェックリストスタイル */
+.checklist-task {
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.checklist-task-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.checklist-task-header h3 {
+    margin: 0;
+    font-size: 18px;
+    color: #2c3e50;
+}
+
+.checklist-steps {
+    list-style: none;
+    counter-reset: step-counter;
+    padding-left: 0;
+    margin: 15px 0;
+}
+
+.checklist-steps li {
+    counter-increment: step-counter;
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 12px;
+    padding: 10px;
+    background: #f8f9fa;
+    border-radius: 4px;
+    position: relative;
+    padding-left: 45px;
+}
+
+.checklist-steps li::before {
+    content: counter(step-counter);
+    position: absolute;
+    left: 10px;
+    top: 10px;
+    background: #3498db;
+    color: white;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.checklist-steps input[type="checkbox"] {
+    margin-right: 10px;
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.checklist-steps label {
+    cursor: pointer;
+    flex: 1;
+    line-height: 1.6;
+}
+
+.checklist-steps input[type="checkbox"]:checked + label {
+    text-decoration: line-through;
+    color: #95a5a6;
+}
+
+.task-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 15px;
+    padding: 12px;
+    background: #f8f9fa;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.task-meta-item {
+    color: #555;
+}
+
+.task-meta-item strong {
+    color: #2c3e50;
+    margin-right: 5px;
+}
+
+/* 重要度バッジ */
+.priority-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: bold;
+    text-align: center;
+    white-space: nowrap;
+}
+
+.priority-badge.high {
+    background-color: #e74c3c;
+    color: white;
+}
+
+.priority-badge.medium {
+    background-color: #f39c12;
+    color: white;
+}
+
+.priority-badge.low {
+    background-color: #95a5a6;
+    color: white;
+}
+
+/* タイムラインスタイル */
+.timeline-container {
+    margin: 40px 0;
+    padding: 30px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.timeline {
+    position: relative;
+    padding-left: 30px;
+}
+
+.timeline-item {
+    position: relative;
+    margin-bottom: 30px;
+}
+
+.timeline-marker {
+    position: absolute;
+    left: -38px;
+    top: 5px;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #3498db;
+    border: 3px solid #fff;
+    box-shadow: 0 0 0 3px #3498db;
+    z-index: 2;
+}
+
+.timeline-connector {
+    position: absolute;
+    left: -31px;
+    top: 21px;
+    width: 2px;
+    height: calc(100% + 10px);
+    background: #e0e0e0;
+    z-index: 1;
+}
+
+.timeline-content {
+    padding-left: 20px;
+}
+
+.timeline-period {
+    font-weight: bold;
+    color: #3498db;
+    font-size: 14px;
+    margin-bottom: 5px;
+}
+
+.timeline-link {
+    display: inline-block;
+    color: #2c3e50;
+    text-decoration: none;
+    font-size: 16px;
+    padding: 8px 12px;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+.timeline-link:hover {
+    background: #ecf0f1;
+    color: #3498db;
+    transform: translateX(5px);
+}
+
+.timeline-tasks {
+    margin-top: 10px;
+    padding-left: 20px;
+    list-style: disc;
+    color: #555;
+    font-size: 14px;
+}
+
+.timeline-tasks li {
+    margin-bottom: 5px;
+    line-height: 1.5;
+}
+
+/* 参考資料スタイル */
+.task-references {
+    margin-top: 20px;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 4px;
+    border-left: 3px solid #3498db;
+}
+
+.references-title {
+    font-size: 14px;
+    font-weight: bold;
+    color: #2c3e50;
+    margin: 0 0 10px 0;
+}
+
+.references-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.reference-item {
+    margin-bottom: 8px;
+}
+
+.reference-link {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: #2c3e50;
+    padding: 8px 12px;
+    background: #fff;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+.reference-link:hover {
+    background: #ecf0f1;
+    transform: translateX(3px);
+}
+
+.reference-type {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-size: 11px;
+    font-weight: bold;
+    margin-right: 10px;
+    min-width: 60px;
+    text-align: center;
+}
+
+.reference-type.excel {
+    background-color: #217346;
+    color: white;
+}
+
+.reference-type.outlook {
+    background-color: #0078d4;
+    color: white;
+}
+
+.reference-type.pdf {
+    background-color: #e74c3c;
+    color: white;
+}
+
+.reference-type.word {
+    background-color: #2b579a;
+    color: white;
+}
+
+.reference-type.file {
+    background-color: #95a5a6;
+    color: white;
+}
+
+.reference-name {
+    flex: 1;
+    font-size: 14px;
 }
 
